@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="author" content="Simi Fagbemi">
+</head>
+<body>
+	<form id="signIn" name="submitForm" method="GET" action="formProcessor.html">
+	<table class="form">
+		<tr>
+			<td>Name</td>
+			<td><input name="AccountName" required /></td>
+		</tr>
+    <tr>
+			<td>Address</td>
+			<td><input name="Address" required /></td>
+		</tr>
+
+		<tr>
+			<td>Phone Number (format: 5555555555) </td>
+			<td><input name="PhoneNumber" required type="tel" pattern="\d{10}" /></td>
+		</tr>
+
+		<tr>
+			<td>Pizza Size</td>
+      <td>
+        <input type="radio" required name="size" value="large" > Large<br>
+        <input type="radio" name="size" value="medium" > Medium<br>
+        <input type="radio" name="size" value="small" > Small
+      </td>
+		</tr>
+
+		<tr>
+			<td>Pizza Toppings </td>
+      <td>
+        <input type="checkbox" name="topping" value="Sausage">Sausage<br>
+        <input type="checkbox" name="topping" value="Pepperoni">Pepperoni
+        <input type="checkbox" name="topping" value="Anchovies">Anchovies<br>
+        <input type="checkbox" name="topping" value="Onions">Onions<br>
+        <input type="checkbox" name="topping" value="Olives">Olives<br>
+      </td>
+		</tr>
+
+	<tr><td colspan="2"><input type="submit" value="Place Order" /><br />
+	<input type="reset" value="Clear" /></td></tr>
+	</table>
+	<input type="hidden" name="timeStamp"/>
+
+	</form>
+</body>
+
+<script>
+var form = document.getElementById("signIn");
+form.addEventListener("submit", validateForm);
+
+function isOldEnough(dateStr)
+{
+	var currentDate = Date.now();
+	var birthday = Date.parse(dateStr);
+	var millisIn18Years = 567648000000;
+	var diffInMillis = Math.abs(currentDate - birthday);
+	return (diffInMillis >= millisIn18Years);
+}
+
+function isAccountNameLegal(accountName)
+{
+	//if first char is numberic return false
+	if (/^\d+$/.test(accountName[0]))
+	{
+		return false;
+	}
+	if (! accountName.match("^[a-zA-Z0-9]*$"))
+	{
+		return false;
+	}
+	return true;
+}
+
+function arePasswordsEqual()
+{
+	var password = document.getElementsByName("Password")[0];
+	var passwordConfirmation = document.getElementsByName("PasswordConfirmation")[0];
+	return password === passwordConfirmation;
+}
+
+function validateForm(e)
+{
+	var email = this.querySelector('input[name="Email"]').value;
+	var accountName = this.querySelector('input[name="AccountName"]').value;
+	var phoneNumber = this.querySelector('input[name="PhoneNumber"]').value;
+	var dob = this.querySelector('input[name="DOB"]').value;
+	var password = this.querySelector('input[name="Password"]').value;
+	var passwordConfirmation = this.querySelector('input[name="PasswordConfirmation"]').value;
+	this.querySelector('input[name="timeStamp"]').value = Date.now();
+	var alertString= "";
+	if (!isOldEnough(dob))
+	{
+		alertString+="You are under 18!\n";
+	}
+	if (!isAccountNameLegal(accountName))
+	{
+		alertString+="Account name is illegal\n";
+	}
+	if (password !== passwordConfirmation)
+	{
+		alertString+="Password does not match password confirmation\n";
+	}
+	if (alertString.length > 0)
+	{
+		alert(alertString);
+		e.preventDefault();
+	}
+}
+</script>
+
+</html>
